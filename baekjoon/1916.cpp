@@ -23,6 +23,7 @@ int get_min_arrival(int s, int N) {
             min_cost = _c;
         }
     }
+    // 방문 내용 기록
     if(min_arrival != -1) visited_map[s][min_arrival] = 1;
     return min_arrival;
 }
