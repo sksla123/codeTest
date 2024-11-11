@@ -187,67 +187,114 @@
 // 	cout << value[end];
 
 // 	return 0;
+// // }
+
+// #include <iostream>
+// #include <vector>
+// #include <queue>
+// #include <cstring>
+
+// #define MAP_MAX 1010
+// #define INF 101010
+
+// using namespace std;
+
+// int cost_table[MAP_MAX]; // 출발도시로부터 각 도시까지 최소 비용 테이블
+// vector<pair<int, int>> city_graph[MAP_MAX]; // [출발도시] <도착도시, 비용>으로 이루어진 도시 그래프
+
+// // 다익스트라 알고리즘
+// void dijkstra(int start){
+//     // 우선순위 큐 (min_heap(최소 힙)) -> 더 작은 값이 우선순위가 높음
+//     priority_queue<pair<int, int>, vector<pair<int,int>>, greater<pair<int, int>>> pq;
+    
+//     // pair 구조 == <비용, 도착도시>
+//     pq.push(make_pair(0, start)); // 출발도시에서 출발도시로 이동하는 비용 == 0, 다익스트라를 위한 우선순위 큐의 초기 값
+//     cost_table[start] = 0; // 출발 도시에서 출발도시로 이동 하는 비용 = 0
+//     while (!pq.empty())
+//     {
+//         int cost = pq.top().first; // 출발도시에서 현재도시까지 비용
+//         int x = pq.top().second; // 현재도시
+//         pq.pop();
+        
+//         // 현 도시까지 비용이 이미 기록된 비용보다 크면 pass
+//         if (cost_table[x] < cost) 
+//             continue;
+        
+//         // x 도시와 이어진 도시들 검사
+//         for (int i = 0; i < city_graph[x].size(); i++){
+//             int nx = city_graph[x][i].first; // 다음 도시 
+//             int ncost = cost + city_graph[x][i].second; // 다음 도시까지 비용
+ 
+//             // 기록되어진 비용보다 지금 비용이 더 작다면
+//             // 큐에 넣어줌 
+//             if (vis[nx] > ncost){ 
+//                 pq.push(make_pair(ncost, nx));
+//                 vis[nx] = ncost; // 비용 다시 기록
+//             }
+//         }
+//     }
+// }
+// int main(){
+//     int n, m;
+//     cin >> n >> m;
+    
+//     v[0].push_back(make_pair(0, 0));
+//     memset(vis, 98765432, sizeof(vis)); // 모든 비용 최대로 
+//     for (int i = 0; i < m; i++){
+//         int a, b, c;
+//         cin >> a >> b >> c;
+//         v[a].push_back(make_pair(b, c));
+//     }
+//     int st, dt; // 출발 도시, 도착 도시
+//     cin >> st >> dt;
+//     fc(st); 
+//     cout << vis[dt]; // dt 도시의 비용 출력
+//     return 0;
 // }
 
 #include <iostream>
 #include <vector>
 #include <queue>
-#include <cstring>
-
-#define MAP_MAX 1010
-#define INF 101010
-
 using namespace std;
 
-int cost_table[MAP_MAX]; // 출발도시로부터 각 도시까지 최소 비용 테이블
-vector<pair<int, int>> city_graph[MAP_MAX]; // [출발도시] <도착도시, 비용>으로 이루어진 도시 그래프
+/* { 비용, 정점 번호 } 인접 리스트 선언 */
+vector<pair<int, int>> adj[1005];
+const int INF = 0x3f3f3f3f;
+#define __int64 int
 
-// 다익스트라 알고리즘
-void dijkstra(int start){
-    // 우선순위 큐 (min_heap(최소 힙)) -> 더 작은 값이 우선순위가 높음
-    priority_queue<pair<int, int>, vector<pair<int,int>>, greater<pair<int, int>>> pq;
+int main() {
+    ios_base::sync_with_stdio(0);
+    int N, M, st, en;
+    cin >> N >> M;
     
-    // pair 구조 == <비용, 도착도시>
-    pq.push(make_pair(0, start)); // 출발도시에서 출발도시로 이동하는 비용 == 0, 다익스트라를 위한 우선순위 큐의 초기 값
-    cost_table[start] = 0; // 출발 도시에서 출발도시로 이동 하는 비용 = 0
-    while (!pq.empty())
-    {
-        int cost = pq.top().first; // 출발도시에서 현재도시까지 비용
-        int x = pq.top().second; // 현재도시
-        pq.pop();
-        
-        // 현 도시까지 비용이 이미 기록된 비용보다 크면 pass
-        if (cost_table[x] < cost) 
-            continue;
-        
-        // x 도시와 이어진 도시들 검사
-        for (int i = 0; i < city_graph[x].size(); i++){
-            int nx = city_graph[x][i].first; // 다음 도시 
-            int ncost = cost + city_graph[x][i].second; // 다음 도시까지 비용
- 
-            // 기록되어진 비용보다 지금 비용이 더 작다면
-            // 큐에 넣어줌 
-            if (vis[nx] > ncost){ 
-                pq.push(make_pair(ncost, nx));
-                vis[nx] = ncost; // 비용 다시 기록
-            }
+    vector<int> dist(N + 1, INF); // 최단 거리 테이블: INF로 초기화
+
+    for (int i = 0; i < M; i++) {
+        int u, v, w;
+        cin >> u >> v >> w;
+        adj[u].push_back({w, v});
+    }
+    cin >> st >> en; 
+
+	/* 다익스트라 */
+    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
+    dist[st] = 0;    
+    pq.push({dist[st], st});    // 시작점
+
+    while(!pq.empty()) {
+        /* 우선순위 큐에서 가중치가 가장 작은 요소 선택 */
+        auto cur = pq.top(); pq.pop();
+        /* cur의 가중치가 최단 거리가 아닌 경우 스킵 */
+        if (dist[cur.second] != cur.first) continue;
+
+        /* 현재 노드의 인접노드들 탐색 */
+        for (auto next : adj[cur.second]) {
+            if (dist[next.second] <= dist[cur.second] + next.first) continue;
+            /* 최단거리(dist) 갱신 및 우선순위 큐에 추가 */
+            dist[next.second] = dist[cur.second] + next.first;
+            pq.push({dist[next.second], next.second});
         }
     }
-}
-int main(){
-    int n, m;
-    cin >> n >> m;
-    
-    v[0].push_back(make_pair(0, 0));
-    memset(vis, 98765432, sizeof(vis)); // 모든 비용 최대로 
-    for (int i = 0; i < m; i++){
-        int a, b, c;
-        cin >> a >> b >> c;
-        v[a].push_back(make_pair(b, c));
-    }
-    int st, dt; // 출발 도시, 도착 도시
-    cin >> st >> dt;
-    fc(st); 
-    cout << vis[dt]; // dt 도시의 비용 출력
-    return 0;
+
+    cout << dist[en];
 }
