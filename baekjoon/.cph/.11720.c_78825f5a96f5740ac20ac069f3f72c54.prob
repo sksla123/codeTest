@@ -1,0 +1,1 @@
+{"name":"Local: 11720","url":"d:\\OneDrive - jbnu\\Develop\\codeTest\\baekjoon\\11720.c","tests":[{"id":1731411452130,"input":"1\n1","output":"1"},{"id":1731411462826,"input":"5\n54321","output":"15"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\OneDrive - jbnu\\Develop\\codeTest\\baekjoon\\11720.c","group":"local","local":true}
